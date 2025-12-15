@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="icon" href="index.png">
+</head>
+<style>
+    *{
+    margin:0;
+    padding:0px;
+    box-sizing:border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+body{
+    width:100vw;
+    height:100vh;
+    padding: 50px;
+    background-color: black;
+    color:white;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.container{
+    display:grid;
+    grid-template-columns: repeat(5,auto);
+    
+    
+}
+.box{
+    width:100px;
+    height:100px;
+    border:2px solid yellow;
+    box-shadow: 0 0 0 2px solid yellow;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor: pointer;
+}
+button{
+    width: 150px;
+    height: 40px;
+    border-radius: 2px ;
+    background-color: green;
+    cursor: pointer;
+    border: none;
+    border-radius:25px;
+}
+button:hover{
+    background-color:darkblue;
+    color:white;
+    transition-duration: 0.1s background-color;
+    transition-duration: 0.1s color;
+    transition: ease-in-out 0.5s;
+    height:50px;
+}
+.win{
+    animation:winAnimation ease-in-out 1s infinite;
+}
+
+@keyframes winAnimation {
+    0%{background-color: blue;}
+    100%{background-color: red;}
+}
+</style>
+<body>
+    <div class="container">
+        <div data-index="0"class="box"></div>
+        <div data-index="1"class="box"></div>
+        <div data-index="2"class="box"></div>
+        <div data-index="3"class="box"></div>
+        <div data-index="4"class="box"></div>
+        <div data-index="5"class="box"></div>
+        <div data-index="6"class="box"></div>
+        <div data-index="7"class="box"></div>
+        <div data-index="8"class="box"></div>
+        <div data-index="9"class="box"></div>
+        <div data-index="10"class="box"></div>
+        <div data-index="11"class="box"></div>
+        <div data-index="12"class="box"></div>
+        <div data-index="13"class="box"></div>
+        <div data-index="14"class="box"></div>
+        <div data-index="15"class="box"></div>
+        <div data-index="16"class="box"></div>
+        <div data-index="17"class="box"></div>
+        <div data-index="18"class="box"></div>
+        <div data-index="19"class="box"></div>
+        <div data-index="20"class="box"></div>
+        <div data-index="21"class="box"></div>
+        <div data-index="22"class="box"></div>
+        <div data-index="23"class="box"></div>
+        <div data-index="24"class="box"></div>
+    </div>
+    <br>
+    <div id="player">Player Status</div>
+    <br>
+    <button id="Restart">Restart</button>
+    <script>
+        const boxs=document.querySelectorAll('.box');
+const statusTxt=document.querySelector('#player');
+const btnRestart=document.querySelector('#Restart');
+let x="<img src='X.png' width='90px' height='90px'>";
+let o="<img src='O.png' width='90px' height='90px'>";
+const win=[
+    [0,1,2,3,4],
+    [5,6,7,8,9],
+    [10,11,12,13,14],
+    [15,16,17,18,19],
+    [20,21,22,23,24],
+    [0,5,10,15,20],
+    [1,6,11,16,21],
+    [2,7,12,17,22],
+    [3,8,13,18,23],
+    [4,9,14,19,24],
+    [0,6,12,18,24],
+    [4,8,12,16,20]
+];
+let options=["","","","","","","","","","","","","","","","","","","","","","","","",""];
+let currentPlayer=x;
+let player="X";
+let running=false;
+init();
+function init(){
+    boxs.forEach(box=>box.addEventListener('click',boxClick));
+    btnRestart.addEventListener('click',restart);
+    statusTxt.textContent='${player} Your Turn';
+    running=true;
+}
+function boxClick(){
+    const index=this.dataset.index;
+    if(options[index]!="" || !running){
+        return;
+    }
+    updateBox(this,index);
+    checkWinner();
+}
+function updateBox(box,index){
+      options[index]=player;
+      box.innerHTML=currentPlayer;
+}
+function playerChange(){
+    player=(player=='X')? "O" : "X";
+    currentPlayer=(currentPlayer==x)? o : x;
+    statusTxt.textContent='${player} Your Turn';
+}
+function checkWinner(){
+    let isWon=false;
+    for(let i=0;i<win.length;i++){
+        const condition=win[i];
+        const box1=options[condition[0]];
+        const box2=options[condition[1]];
+        const box3=options[condition[2]];
+        const box4=options[condition[3]];
+        const box5=options[condition[4]];
+    if(box1=="" || box2=="" || box3=="" || box4=="" || box5==""){
+        continue;
+    }
+    if(box1==box2 && box2==box3 && box3==box4 && box4==box5){
+        isWon=true;
+        boxs[condition[0]].classList.add('win');
+        boxs[condition[1]].classList.add('win');
+        boxs[condition[2]].classList.add('win');
+        boxs[condition[3]].classList.add('win');
+        boxs[condition[4]].classList.add('win');
+    }
+    }
+    if(isWon){
+        statusTxt.textContent='${player} Won..!';
+        running=false;
+    }else if(!options.includes("")){
+       statusTxt.textContent='Game Draw..!';
+       running=false;
+    }else{
+        playerChange();
+    }
+}
+function restart(){
+    options=["","","","","","","","","","","","","","","","","","","","","","","","",""];
+    currentPlayer=x;
+    player="X";
+    running=true;
+    statusTxt.textContent='${player} Your Turn';
+    
+    boxs.forEach(box=>{
+        box.innerHTML="";
+        box.classList.remove('win');
+    });
+}
+    </script>
+</body>
+</html>
